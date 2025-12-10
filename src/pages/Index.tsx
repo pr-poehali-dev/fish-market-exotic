@@ -4,28 +4,40 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
+import ShoppingCart from '@/components/ShoppingCart';
 
-type Fish = {
-  id: number;
+type Product = {
+  id: string;
   name: string;
-  latinName: string;
+  latinName?: string;
   price: number;
-  category: 'freshwater' | 'saltwater' | 'exotic';
+  category: 'fish' | 'aquarium' | 'equipment' | 'decor';
+  subCategory?: 'freshwater' | 'saltwater' | 'exotic' | 'aerator' | 'filter' | 'coral' | 'plant' | 'rock';
   stock: 'available' | 'low' | 'out';
   image: string;
   description: string;
-  size: string;
-  temperature: string;
-  difficulty: 'easy' | 'medium' | 'hard';
+  specs?: string;
+  size?: string;
+  temperature?: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
 };
 
-const fishData: Fish[] = [
+type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+};
+
+const productsData: Product[] = [
   {
-    id: 1,
+    id: 'fish-1',
     name: 'Рыба-клоун',
     latinName: 'Amphiprion ocellaris',
     price: 1200,
-    category: 'saltwater',
+    category: 'fish',
+    subCategory: 'saltwater',
     stock: 'available',
     image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/e1f25440-6127-4b68-b166-5e9a5d4b414d.jpg',
     description: 'Яркая морская рыбка, идеально подходит для рифового аквариума',
@@ -34,11 +46,12 @@ const fishData: Fish[] = [
     difficulty: 'medium'
   },
   {
-    id: 2,
+    id: 'fish-2',
     name: 'Голубой хирург',
     latinName: 'Paracanthurus hepatus',
     price: 2500,
-    category: 'exotic',
+    category: 'fish',
+    subCategory: 'exotic',
     stock: 'low',
     image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/a55f0177-194b-4e62-a968-303d5d5add4a.jpg',
     description: 'Экзотическая тропическая рыба насыщенного синего цвета',
@@ -47,11 +60,12 @@ const fishData: Fish[] = [
     difficulty: 'hard'
   },
   {
-    id: 3,
+    id: 'fish-3',
     name: 'Карп Кои',
     latinName: 'Cyprinus carpio',
     price: 3500,
-    category: 'freshwater',
+    category: 'fish',
+    subCategory: 'freshwater',
     stock: 'available',
     image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/321bdf5a-6771-4d21-9ff0-9ca10c276073.jpg',
     description: 'Декоративный карп для прудов и больших аквариумов',
@@ -60,11 +74,12 @@ const fishData: Fish[] = [
     difficulty: 'easy'
   },
   {
-    id: 4,
+    id: 'fish-4',
     name: 'Неон голубой',
     latinName: 'Paracheirodon innesi',
     price: 150,
-    category: 'freshwater',
+    category: 'fish',
+    subCategory: 'freshwater',
     stock: 'available',
     image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/e1f25440-6127-4b68-b166-5e9a5d4b414d.jpg',
     description: 'Маленькая стайная рыбка с неоновой полосой',
@@ -73,11 +88,12 @@ const fishData: Fish[] = [
     difficulty: 'easy'
   },
   {
-    id: 5,
+    id: 'fish-5',
     name: 'Рыба-бабочка',
     latinName: 'Chaetodon',
     price: 1800,
-    category: 'saltwater',
+    category: 'fish',
+    subCategory: 'saltwater',
     stock: 'low',
     image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/a55f0177-194b-4e62-a968-303d5d5add4a.jpg',
     description: 'Изящная морская рыба с яркой окраской',
@@ -86,23 +102,146 @@ const fishData: Fish[] = [
     difficulty: 'hard'
   },
   {
-    id: 6,
+    id: 'fish-6',
     name: 'Скалярия',
     latinName: 'Pterophyllum scalare',
     price: 450,
-    category: 'freshwater',
+    category: 'fish',
+    subCategory: 'freshwater',
     stock: 'available',
     image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/321bdf5a-6771-4d21-9ff0-9ca10c276073.jpg',
     description: 'Элегантная пресноводная рыба треугольной формы',
     size: '12-15 см',
     temperature: '24-28°C',
     difficulty: 'medium'
+  },
+  {
+    id: 'aquarium-1',
+    name: 'Аквариум Panorama 100',
+    price: 15000,
+    category: 'aquarium',
+    stock: 'available',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/84bda76e-6a24-40b1-859b-aeeffd1fc0a6.jpg',
+    description: 'Стильный панорамный аквариум с закругленными углами',
+    specs: '100 л, 80×35×40 см, стекло 6 мм'
+  },
+  {
+    id: 'aquarium-2',
+    name: 'Аквариум Crystal 200',
+    price: 28000,
+    category: 'aquarium',
+    stock: 'available',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/84bda76e-6a24-40b1-859b-aeeffd1fc0a6.jpg',
+    description: 'Большой аквариум премиум-класса с LED-подсветкой',
+    specs: '200 л, 100×50×45 см, ультрапрозрачное стекло'
+  },
+  {
+    id: 'equipment-1',
+    name: 'Аэратор AquaPro 3000',
+    price: 2500,
+    category: 'equipment',
+    subCategory: 'aerator',
+    stock: 'available',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/110698be-1ad4-4721-b2f2-64d6cc12a953.jpg',
+    description: 'Мощный бесшумный аэратор для аквариумов до 300 л',
+    specs: 'Производительность 200 л/ч, 2 выхода, регулировка мощности'
+  },
+  {
+    id: 'equipment-2',
+    name: 'Аэратор Silent Mini',
+    price: 890,
+    category: 'equipment',
+    subCategory: 'aerator',
+    stock: 'available',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/110698be-1ad4-4721-b2f2-64d6cc12a953.jpg',
+    description: 'Компактный аэратор для небольших аквариумов',
+    specs: 'До 50 л, бесшумный, энергосберегающий'
+  },
+  {
+    id: 'equipment-3',
+    name: 'Фильтр Cascade 500',
+    price: 3200,
+    category: 'equipment',
+    subCategory: 'filter',
+    stock: 'low',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/110698be-1ad4-4721-b2f2-64d6cc12a953.jpg',
+    description: 'Внешний каскадный фильтр с трехступенчатой очисткой',
+    specs: 'До 500 л, 1000 л/ч, биологическая + механическая фильтрация'
+  },
+  {
+    id: 'decor-1',
+    name: 'Коралл Brain Coral',
+    price: 1800,
+    category: 'decor',
+    subCategory: 'coral',
+    stock: 'available',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/17ff6a1a-5b93-446b-b0c2-99d353be712a.jpg',
+    description: 'Искусственный коралл-мозговик, выглядит как настоящий',
+    specs: 'Размер 15×12 см, безопасный пластик'
+  },
+  {
+    id: 'decor-2',
+    name: 'Набор кораллов Reef Mix',
+    price: 3500,
+    category: 'decor',
+    subCategory: 'coral',
+    stock: 'available',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/17ff6a1a-5b93-446b-b0c2-99d353be712a.jpg',
+    description: 'Композиция из 5 разных видов кораллов',
+    specs: 'Яркие цвета, высота 10-20 см'
+  },
+  {
+    id: 'decor-3',
+    name: 'Водоросль Анубиас',
+    price: 450,
+    category: 'decor',
+    subCategory: 'plant',
+    stock: 'available',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/321bdf5a-6771-4d21-9ff0-9ca10c276073.jpg',
+    description: 'Живое растение, медленнорастущее и неприхотливое',
+    specs: 'Высота 15-25 см, для пресной воды'
+  },
+  {
+    id: 'decor-4',
+    name: 'Водоросль Валлиснерия',
+    price: 250,
+    category: 'decor',
+    subCategory: 'plant',
+    stock: 'available',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/321bdf5a-6771-4d21-9ff0-9ca10c276073.jpg',
+    description: 'Длинные декоративные листья для заднего плана',
+    specs: 'Высота до 50 см, быстрый рост'
+  },
+  {
+    id: 'decor-5',
+    name: 'Камень Dragon Stone',
+    price: 890,
+    category: 'decor',
+    subCategory: 'rock',
+    stock: 'available',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/17ff6a1a-5b93-446b-b0c2-99d353be712a.jpg',
+    description: 'Натуральный камень с уникальной текстурой',
+    specs: 'Вес 1-2 кг, не влияет на pH воды'
+  },
+  {
+    id: 'decor-6',
+    name: 'Набор декора Underwater Castle',
+    price: 2200,
+    category: 'decor',
+    subCategory: 'rock',
+    stock: 'low',
+    image: 'https://cdn.poehali.dev/projects/1f437e8a-43ca-4479-a2f9-af87ad18aca8/files/17ff6a1a-5b93-446b-b0c2-99d353be712a.jpg',
+    description: 'Композиция из замка, арки и камней',
+    specs: 'Керамика, безопасно для рыб, создает укрытия'
   }
 ];
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState('home');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedProductType, setSelectedProductType] = useState<string>('fish');
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>([]);
 
   const getStockBadge = (stock: string) => {
     switch (stock) {
@@ -130,9 +269,50 @@ const Index = () => {
     }
   };
 
-  const filteredFish = selectedCategory === 'all' 
-    ? fishData 
-    : fishData.filter(fish => fish.category === selectedCategory);
+  const addToCart = (product: Product) => {
+    const existingItem = cart.find(item => item.id === product.id);
+    if (existingItem) {
+      setCart(cart.map(item => 
+        item.id === product.id 
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      ));
+    } else {
+      setCart([...cart, {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        image: product.image
+      }]);
+    }
+  };
+
+  const updateQuantity = (id: string, quantity: number) => {
+    if (quantity === 0) {
+      setCart(cart.filter(item => item.id !== id));
+    } else {
+      setCart(cart.map(item => 
+        item.id === id ? { ...item, quantity } : item
+      ));
+    }
+  };
+
+  const removeFromCart = (id: string) => {
+    setCart(cart.filter(item => item.id !== id));
+  };
+
+  const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+  const filteredProducts = productsData.filter(product => {
+    if (selectedProductType !== 'fish') {
+      return product.category === selectedProductType;
+    }
+    if (selectedCategory === 'all') {
+      return product.category === 'fish';
+    }
+    return product.category === 'fish' && product.subCategory === selectedCategory;
+  });
 
   const scrollToSection = (section: string) => {
     setActiveSection(section);
@@ -193,9 +373,18 @@ const Index = () => {
                 </button>
               </li>
             </ul>
-            <Button size="sm" className="hidden md:flex items-center gap-2">
+            <Button 
+              size="sm" 
+              className="hidden md:flex items-center gap-2 relative"
+              onClick={() => setCartOpen(true)}
+            >
               <Icon name="ShoppingCart" size={18} />
               Корзина
+              {cartItemCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 bg-primary">
+                  {cartItemCount}
+                </Badge>
+              )}
             </Button>
           </div>
         </nav>
@@ -226,72 +415,125 @@ const Index = () => {
         <section id="catalog" className="py-20 px-4 bg-secondary/30">
           <div className="container mx-auto">
             <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold mb-4">Каталог рыб</h2>
+              <h2 className="text-4xl font-bold mb-4">Каталог товаров</h2>
               <p className="text-muted-foreground text-lg">Отслеживание наличия в реальном времени</p>
             </div>
 
-            <Tabs defaultValue="all" className="w-full mb-8">
-              <TabsList className="grid w-full max-w-md mx-auto grid-cols-4 mb-12">
-                <TabsTrigger value="all" onClick={() => setSelectedCategory('all')}>
-                  Все
-                </TabsTrigger>
-                <TabsTrigger value="freshwater" onClick={() => setSelectedCategory('freshwater')}>
-                  Пресные
-                </TabsTrigger>
-                <TabsTrigger value="saltwater" onClick={() => setSelectedCategory('saltwater')}>
-                  Морские
-                </TabsTrigger>
-                <TabsTrigger value="exotic" onClick={() => setSelectedCategory('exotic')}>
-                  Экзотика
-                </TabsTrigger>
-              </TabsList>
+            <div className="flex gap-4 justify-center mb-8 flex-wrap">
+              <Button 
+                variant={selectedProductType === 'fish' ? 'default' : 'outline'}
+                onClick={() => setSelectedProductType('fish')}
+                className="gap-2"
+              >
+                <Icon name="Fish" size={18} />
+                Рыбы
+              </Button>
+              <Button 
+                variant={selectedProductType === 'aquarium' ? 'default' : 'outline'}
+                onClick={() => setSelectedProductType('aquarium')}
+                className="gap-2"
+              >
+                <Icon name="Box" size={18} />
+                Аквариумы
+              </Button>
+              <Button 
+                variant={selectedProductType === 'equipment' ? 'default' : 'outline'}
+                onClick={() => setSelectedProductType('equipment')}
+                className="gap-2"
+              >
+                <Icon name="Settings" size={18} />
+                Оборудование
+              </Button>
+              <Button 
+                variant={selectedProductType === 'decor' ? 'default' : 'outline'}
+                onClick={() => setSelectedProductType('decor')}
+                className="gap-2"
+              >
+                <Icon name="Flower" size={18} />
+                Декор
+              </Button>
+            </div>
 
-              <TabsContent value={selectedCategory} className="animate-fade-in">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {filteredFish.map((fish) => (
-                    <Card key={fish.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+            {selectedProductType === 'fish' && (
+              <Tabs defaultValue="all" className="w-full mb-8">
+                <TabsList className="grid w-full max-w-md mx-auto grid-cols-4 mb-8">
+                  <TabsTrigger value="all" onClick={() => setSelectedCategory('all')}>
+                    Все
+                  </TabsTrigger>
+                  <TabsTrigger value="freshwater" onClick={() => setSelectedCategory('freshwater')}>
+                    Пресные
+                  </TabsTrigger>
+                  <TabsTrigger value="saltwater" onClick={() => setSelectedCategory('saltwater')}>
+                    Морские
+                  </TabsTrigger>
+                  <TabsTrigger value="exotic" onClick={() => setSelectedCategory('exotic')}>
+                    Экзотика
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            )}
+
+            <div className="animate-fade-in">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredProducts.map((product) => (
+                    <Card key={product.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                       <div className="aspect-video overflow-hidden bg-secondary/20">
                         <img 
-                          src={fish.image} 
-                          alt={fish.name}
+                          src={product.image} 
+                          alt={product.name}
                           className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                         />
                       </div>
                       <CardHeader>
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <CardTitle className="text-xl mb-1">{fish.name}</CardTitle>
-                            <CardDescription className="italic text-xs">{fish.latinName}</CardDescription>
+                            <CardTitle className="text-xl mb-1">{product.name}</CardTitle>
+                            {product.latinName && (
+                              <CardDescription className="italic text-xs">{product.latinName}</CardDescription>
+                            )}
                           </div>
-                          {getStockBadge(fish.stock)}
+                          {getStockBadge(product.stock)}
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm text-muted-foreground mb-4">{fish.description}</p>
+                        <p className="text-sm text-muted-foreground mb-4">{product.description}</p>
                         <div className="space-y-2 text-sm">
-                          <div className="flex items-center gap-2">
-                            <Icon name="Ruler" size={16} className="text-primary" />
-                            <span className="text-muted-foreground">Размер:</span>
-                            <span className="font-medium">{fish.size}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Icon name="Thermometer" size={16} className="text-primary" />
-                            <span className="text-muted-foreground">Температура:</span>
-                            <span className="font-medium">{fish.temperature}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Icon name="TrendingUp" size={16} className="text-primary" />
-                            <span className="text-muted-foreground">Сложность:</span>
-                            {getDifficultyIcon(fish.difficulty)}
-                          </div>
+                          {product.size && (
+                            <div className="flex items-center gap-2">
+                              <Icon name="Ruler" size={16} className="text-primary" />
+                              <span className="text-muted-foreground">Размер:</span>
+                              <span className="font-medium">{product.size}</span>
+                            </div>
+                          )}
+                          {product.temperature && (
+                            <div className="flex items-center gap-2">
+                              <Icon name="Thermometer" size={16} className="text-primary" />
+                              <span className="text-muted-foreground">Температура:</span>
+                              <span className="font-medium">{product.temperature}</span>
+                            </div>
+                          )}
+                          {product.difficulty && (
+                            <div className="flex items-center gap-2">
+                              <Icon name="TrendingUp" size={16} className="text-primary" />
+                              <span className="text-muted-foreground">Сложность:</span>
+                              {getDifficultyIcon(product.difficulty)}
+                            </div>
+                          )}
+                          {product.specs && (
+                            <div className="flex items-start gap-2">
+                              <Icon name="Info" size={16} className="text-primary mt-0.5" />
+                              <span className="font-medium text-xs">{product.specs}</span>
+                            </div>
+                          )}
                         </div>
                       </CardContent>
                       <CardFooter className="flex items-center justify-between border-t pt-4">
-                        <div className="text-2xl font-bold text-primary">{fish.price} ₽</div>
+                        <div className="text-2xl font-bold text-primary">{product.price.toLocaleString()} ₽</div>
                         <Button 
                           size="sm" 
-                          disabled={fish.stock === 'out'}
+                          disabled={product.stock === 'out'}
                           className="gap-2"
+                          onClick={() => addToCart(product)}
                         >
                           <Icon name="ShoppingCart" size={16} />
                           В корзину
@@ -300,8 +542,7 @@ const Index = () => {
                     </Card>
                   ))}
                 </div>
-              </TabsContent>
-            </Tabs>
+              </div>
           </div>
         </section>
 
@@ -438,6 +679,14 @@ const Index = () => {
           <p className="text-sm opacity-80">© 2024 AquaWorld. Все права защищены</p>
         </div>
       </footer>
+
+      <ShoppingCart
+        isOpen={cartOpen}
+        onClose={() => setCartOpen(false)}
+        items={cart}
+        onUpdateQuantity={updateQuantity}
+        onRemove={removeFromCart}
+      />
     </div>
   );
 };
